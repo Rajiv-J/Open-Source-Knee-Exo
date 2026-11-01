@@ -498,3 +498,20 @@ body {
     padding-bottom: 5rem;
   }
 }
+
+/* ---------- BibTeX block ---------- */
+.bibtex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.bibtex-header .title {
+  margin-bottom: 0 !important;
+}
+
+#BibTeX pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

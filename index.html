@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Bump ?v= when editing site CSS/JS so browsers load the new version -->
-  <link rel="stylesheet" href="static/css/index.css?v=12">
+  <link rel="stylesheet" href="static/css/index.css?v=13">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -33,6 +33,7 @@
   <script defer src="static/js/motion-plot.js?v=1"></script>
   <script defer src="static/js/squat-viewer.js?v=8"></script>
   <script defer src="static/js/results-panel.js?v=2"></script>
+  <script defer src="static/js/bibtex-copy.js?v=1"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -336,8 +337,20 @@
     <!-- BibTeX citation -->
     <section class="section main-block is-full" id="BibTeX">
       <div class="content">
-        <h2 class="title">BibTeX</h2>
-        <pre><code>BibTex Code Here</code></pre>
+        <div class="bibtex-header">
+          <h2 class="title">BibTeX</h2>
+          <button type="button" class="button is-small is-rounded js-copy-bibtex" aria-label="Copy BibTeX">
+            <span class="icon"><i class="far fa-copy"></i></span>
+            <span class="copy-label">Copy</span>
+          </button>
+        </div>
+        <!-- TODO: replace XXXX.XXXXX with the arXiv number (same time as the arXiv button link) -->
+        <pre><code id="bibtex-entry">@article{joshi2026design,
+  title   = {Design and Validation of a Robotic Knee Exoskeleton with Musculoskeletal Simulation-Derived Biological Torque Control},
+  author  = {Joshi, Rajiv V. and An, Jimin and Park, Ilseung and Lee, Dawit and Kang, Inseung},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026}
+}</code></pre>
       </div>
     </section>
     <!-- End BibTeX citation -->
