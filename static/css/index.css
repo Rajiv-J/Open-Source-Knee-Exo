@@ -414,3 +414,26 @@ body {
 .motion-plot canvas.is-compact {
   height: 120px;
 }
+
+/* ---------- Lab logo link (header) ---------- */
+.lab-link {
+  margin-top: 0.75rem;
+}
+
+.lab-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #363636;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1.05rem;
+}
+
+.lab-link a:hover span {
+  text-decoration: underline;
+}
+
+.lab-link img {
+  width: 32px;
+  height: 32px;
+}
