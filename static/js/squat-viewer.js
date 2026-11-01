@@ -1,6 +1,8 @@
-// Squat simulation viewer: tints each muscle by its activation (0-1) in sync
-// with the animation. Data comes from the JSON written by
-// tools/build_squat_model.py (see the viewer's data-motion attribute).
+// Squat simulation viewer:
+//  - pause/play button for the squat motion
+//  - tints each muscle by its activation (0-1) in sync with the animation
+// Data comes from the JSON written by tools/build_squat_model.py (see the
+// viewer's data-motion attribute).
 (function () {
   const viewer = document.getElementById('squat-viewer');
   if (!viewer) return;
@@ -24,6 +26,23 @@
 
   function mix(a) {
     return [0, 1, 2].map(function (i) { return RELAXED[i] + a * (ACTIVE[i] - RELAXED[i]); }).concat(1);
+  }
+
+  // Pause/play: freezes the motion (and muscle colours) at the current pose.
+  const motionToggle = viewer.closest('.viewer-wrap').querySelector('.js-motion-toggle');
+  function showPlaying(playing) {
+    const label = playing ? 'Pause motion' : 'Play motion';
+    motionToggle.title = label;
+    motionToggle.setAttribute('aria-label', label);
+    motionToggle.querySelector('.icon-pause').classList.toggle('is-hidden', !playing);
+    motionToggle.querySelector('.icon-play').classList.toggle('is-hidden', playing);
+  }
+  if (motionToggle) {
+    motionToggle.addEventListener('click', function () {
+      if (viewer.paused) viewer.play(); else viewer.pause();
+    });
+    viewer.addEventListener('play', function () { showPlaying(true); });
+    viewer.addEventListener('pause', function () { showPlaying(false); });
   }
 
   const modelLoaded = new Promise(function (resolve) {
