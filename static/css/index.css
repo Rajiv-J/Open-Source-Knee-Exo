@@ -415,25 +415,17 @@ body {
   height: 120px;
 }
 
-/* ---------- Lab logo link (header) ---------- */
-.lab-link {
+/* ---------- Institution + lab logos (header) ---------- */
+.org-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
   margin-top: 0.75rem;
 }
 
-.lab-link a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #363636;
-  font-family: 'Google Sans', sans-serif;
-  font-size: 1.05rem;
-}
-
-.lab-link a:hover span {
-  text-decoration: underline;
-}
-
-.lab-link img {
-  width: 32px;
-  height: 32px;
+.org-logos img {
+  display: block;
+  width: 56px;
+  height: 56px;
 }
