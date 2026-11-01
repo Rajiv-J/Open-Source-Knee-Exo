@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Bump ?v= when editing site CSS/JS so browsers load the new version -->
-  <link rel="stylesheet" href="static/css/index.css?v=13">
+  <link rel="stylesheet" href="static/css/index.css?v=17">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -34,6 +34,7 @@
   <script defer src="static/js/squat-viewer.js?v=8"></script>
   <script defer src="static/js/results-panel.js?v=2"></script>
   <script defer src="static/js/bibtex-copy.js?v=1"></script>
+  <script defer src="static/js/panel-expand.js?v=1"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -175,6 +176,10 @@
       <aside class="column is-4-desktop side-column">
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Interactive CAD Model</h3>
+          <button type="button" class="panel-expand js-panel-expand" title="Expand" aria-label="Expand panel" aria-expanded="false">
+            <span class="icon-expand"><i class="fas fa-expand"></i></span>
+            <span class="icon-collapse is-hidden"><i class="fas fa-compress"></i></span>
+          </button>
           <div class="viewer-wrap">
             <model-viewer src="static/models/knee_exo_v2.glb?v=1"
                           alt="Interactive 3D CAD model of the knee exoskeleton"
@@ -225,6 +230,10 @@
       <aside class="column is-4-desktop side-column">
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Squatting Simulation</h3>
+          <button type="button" class="panel-expand js-panel-expand" title="Expand" aria-label="Expand panel" aria-expanded="false">
+            <span class="icon-expand"><i class="fas fa-expand"></i></span>
+            <span class="icon-collapse is-hidden"><i class="fas fa-compress"></i></span>
+          </button>
           <div class="viewer-wrap">
             <model-viewer id="squat-viewer" class="is-short" src="static/models/squat_model.glb?v=5"
                           data-motion="static/models/squat_data.json?v=5"
@@ -298,6 +307,10 @@
       <aside class="column is-4-desktop side-column">
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Squatting with the Exoskeleton</h3>
+          <button type="button" class="panel-expand js-panel-expand" title="Expand" aria-label="Expand panel" aria-expanded="false">
+            <span class="icon-expand"><i class="fas fa-expand"></i></span>
+            <span class="icon-collapse is-hidden"><i class="fas fa-compress"></i></span>
+          </button>
           <!-- TODO: swap the MP4 for the YouTube upload (use the YouTube IFrame API's getCurrentTime() to keep the plot in sync) -->
           <div class="viewer-wrap">
             <video id="trial-video" class="trial-video" src="static/videos/results_trial.mp4?v=1"
