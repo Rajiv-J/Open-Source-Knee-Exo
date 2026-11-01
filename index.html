@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Bump ?v= when editing site CSS/JS so browsers load the new version -->
-  <link rel="stylesheet" href="static/css/index.css?v=3">
+  <link rel="stylesheet" href="static/css/index.css?v=6">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -29,7 +29,7 @@
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js?v=3"></script>
   <script defer src="static/js/viewer-controls.js?v=3"></script>
-  <script defer src="static/js/squat-viewer.js?v=4"></script>
+  <script defer src="static/js/squat-viewer.js?v=6"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -212,12 +212,12 @@
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Squatting Simulation</h3>
           <div class="viewer-wrap">
-            <model-viewer id="squat-viewer" src="static/models/squat_model.glb?v=4"
+            <model-viewer id="squat-viewer" class="is-short" src="static/models/squat_model.glb?v=4"
                           data-motion="static/models/squat_data.json?v=4"
                           alt="Hyfydy musculoskeletal simulation of squatting"
                           camera-controls disable-pan disable-zoom autoplay
                           interaction-prompt="none"
-                          camera-orbit="45deg 75deg 3.4m"
+                          camera-orbit="45deg 75deg 3.3m"
                           touch-action="pan-y"></model-viewer>
             <div class="viewer-controls">
               <button type="button" class="viewer-btn js-motion-toggle" title="Pause motion" aria-label="Pause motion">
@@ -229,7 +229,12 @@
               </button>
             </div>
           </div>
-          <p class="side-note">Hyfydy simulation &middot; muscle color shows activation (pale = 0, red = 1) &middot; drag to rotate</p>
+          <div class="motion-plot">
+            <p class="plot-title">Knee muscle moment (Nm, extension +)</p>
+            <canvas id="knee-plot" role="img" aria-label="Knee muscle moment over the squat, drawn in sync with the animation"></canvas>
+            <p class="plot-readout" aria-live="off"></p>
+          </div>
+          <p class="side-note">Hyfydy simulation &middot; muscle color shows activation (muted = 0, bright red = 1) &middot; drag to rotate</p>
           </div>
         </div>
       </aside>

@@ -346,3 +346,33 @@ body {
 .viewer-wrap {
   position: relative;
 }
+
+/* ---------- Squat panel: shorter 3D view + live knee moment plot ---------- */
+/* (kept short so the whole panel fits on a ~680 px tall laptop viewport) */
+.side-panel model-viewer.is-short {
+  height: 320px;
+}
+
+.motion-plot {
+  margin-top: 0.75rem;
+}
+
+.motion-plot .plot-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #363636;
+  text-align: center;
+}
+
+.motion-plot canvas {
+  display: block;
+  width: 100%;
+  height: 140px;
+}
+
+.motion-plot .plot-readout {
+  font-size: 0.8rem;
+  color: #555;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
