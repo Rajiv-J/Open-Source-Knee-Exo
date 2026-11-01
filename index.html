@@ -27,6 +27,7 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+  <script defer src="static/js/viewer-controls.js"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -229,10 +230,23 @@
         <div class="cad-panel">
           <h3 class="title is-5 has-text-centered">Interactive CAD Model</h3>
           <!-- TODO: replace placeholder_cube.glb with the exported knee exoskeleton GLB -->
-          <model-viewer src="static/models/placeholder_cube.glb"
-                        alt="Interactive 3D model (placeholder)"
-                        camera-controls auto-rotate shadow-intensity="1"
-                        touch-action="pan-y"></model-viewer>
+          <div class="viewer-wrap">
+            <model-viewer src="static/models/placeholder_cube.glb"
+                          alt="Interactive 3D model (placeholder)"
+                          camera-controls auto-rotate shadow-intensity="1"
+                          interaction-prompt="none"
+                          camera-orbit="45deg 54.74deg auto"
+                          touch-action="pan-y"></model-viewer>
+            <div class="viewer-controls">
+              <button type="button" class="viewer-btn js-rotate-toggle" title="Pause rotation" aria-label="Pause rotation">
+                <span class="icon-pause"><i class="fas fa-pause"></i></span>
+                <span class="icon-play is-hidden"><i class="fas fa-play"></i></span>
+              </button>
+              <button type="button" class="viewer-btn js-reset-view" title="Reset view" aria-label="Reset to isometric view">
+                <i class="fas fa-home"></i>
+              </button>
+            </div>
+          </div>
           <p class="cad-note">Placeholder model &middot; drag to rotate, scroll to zoom</p>
         </div>
       </aside>
