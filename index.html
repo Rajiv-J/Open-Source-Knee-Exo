@@ -27,6 +27,7 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
 
@@ -100,128 +101,145 @@
   </section>
   <!-- End project video -->
 
-  <!-- Abstract -->
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>
-              Data-driven controllers have enabled lower-limb robotic exoskeletons to adapt assistance to the user across many tasks. A leading example is biological torque control, which estimates the user's own joint moment from onboard sensors and assists in proportion to that estimate. However, its estimators are trained on data recorded with the target device, so deploying the controller on new hardware requires collecting new data. Existing open-source efforts release hardware, software, or controllers separately, so this data collection must still be repeated on the assembled device. Here, we present an open-source knee exoskeleton, built from off-the-shelf components and widely available fabrication tools, with a biological torque controller derived entirely from simulation. A muscle-driven imitation policy reproduces squatting motions from an open biomechanics dataset, and the resulting knee moments are distilled into an estimator that uses only onboard sensors, so no training data are recorded on the device. In seven able-bodied participants, assistance reduced peak biological knee extension moment by 21.5% and peak vastus medialis activation by 26.7% during squatting, relative to squatting without the exoskeleton (p&lt;0.05). Our results demonstrate that a biological torque controller derived from simulation can transfer to physical hardware without device-specific data collection. Because the hardware and training pipeline are released together, research groups can train and compare knee exoskeleton controllers on shared hardware without additional data collection overhead.
-            </p>
-          </div>
+  <!-- Main layout: paper content (left) + sticky CAD viewer (right) -->
+  <div class="container page-layout">
+    <div class="columns is-desktop">
+
+      <div class="column is-8-desktop main-column">
+      <!-- Abstract -->
+      <section class="section main-block is-light">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Data-driven controllers have enabled lower-limb robotic exoskeletons to adapt assistance to the user across many tasks. A leading example is biological torque control, which estimates the user's own joint moment from onboard sensors and assists in proportion to that estimate. However, its estimators are trained on data recorded with the target device, so deploying the controller on new hardware requires collecting new data. Existing open-source efforts release hardware, software, or controllers separately, so this data collection must still be repeated on the assembled device. Here, we present an open-source knee exoskeleton, built from off-the-shelf components and widely available fabrication tools, with a biological torque controller derived entirely from simulation. A muscle-driven imitation policy reproduces squatting motions from an open biomechanics dataset, and the resulting knee moments are distilled into an estimator that uses only onboard sensors, so no training data are recorded on the device. In seven able-bodied participants, assistance reduced peak biological knee extension moment by 21.5% and peak vastus medialis activation by 26.7% during squatting, relative to squatting without the exoskeleton (p&lt;0.05). Our results demonstrate that a biological torque controller derived from simulation can transfer to physical hardware without device-specific data collection. Because the hardware and training pipeline are released together, research groups can train and compare knee exoskeleton controllers on shared hardware without additional data collection overhead.
+          </p>
         </div>
+      </section>
+      <!-- End abstract -->
+
+      <!-- Paper figures and tables (in paper order, captions verbatim from main.tex) -->
+
+      <section class="section main-block">
+        <div>
+          <h2 class="title is-3 has-text-centered">Robotic Knee Exoskeleton Design</h2>
+            <figure class="paper-figure">
+              <img src="static/images/fig1_exoskeleton_overview.png" alt="Overview of the robotic knee exoskeleton design" loading="lazy">
+              <figcaption><strong>Figure 1. Overview of the robotic knee exoskeleton design.</strong> (a) Sagittal-plane view of the unilateral device, with straps, hooks, and cuffs at the thigh, shank, and ankle. (b) A participant wearing the bilateral device, shown left to right in sagittal standing, sagittal squatting, and frontal standing. (c) The high-level control board built around the embedded computer (top) and the low-level control board built around the microcontroller (bottom).</figcaption>
+            </figure>
+
+            <div class="paper-table is-compact">
+              <p class="table-title"><strong>Table I.</strong> Device Specifications</p>
+              <div class="table-container">
+                <table class="table is-fullwidth is-narrow">
+                  <tbody>
+                    <tr class="table-group"><th colspan="2">Mechanical</th></tr>
+                    <tr><td>Total mass, bilateral<sup>*</sup> (kg)</td><td class="has-text-right">3.5</td></tr>
+                    <tr><td>Unilateral mass (kg)</td><td class="has-text-right">1.3</td></tr>
+                    <tr><td>Actuator mass (kg)</td><td class="has-text-right">0.49</td></tr>
+                    <tr><td>Rated / peak torque<sup>**</sup> (Nm)</td><td class="has-text-right">9 / 22</td></tr>
+                    <tr><td>Range of motion (deg)</td><td class="has-text-right">0&ndash;120</td></tr>
+                    <tr class="table-group"><th colspan="2">Compute/Electrical</th></tr>
+                    <tr><td>Inertial sensor communication</td><td class="has-text-right">SPI</td></tr>
+                    <tr><td>Motor communication</td><td class="has-text-right">CAN</td></tr>
+                    <tr><td>Low-to-High level communication</td><td class="has-text-right">CANFD</td></tr>
+                    <tr><td>Low-level loop execution (&micro;s)</td><td class="has-text-right">~80</td></tr>
+                    <tr><td>High/low-level round trip (ms)</td><td class="has-text-right">&lt;0.5</td></tr>
+                    <tr><td>Estimated run time (h)</td><td class="has-text-right">~2</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note"><sup>*</sup>Includes the battery and embedded electronics.<br>
+                <sup>**</sup>The stock motor driver limits output to 18&nbsp;Nm per the manufacturer's safety constraint.</p>
+            </div>
+        </div>
+      </section>
+
+      <section class="section main-block is-light">
+        <div>
+          <h2 class="title is-3 has-text-centered">Simulation-Derived Biological Torque Control</h2>
+            <figure class="paper-figure is-narrow">
+              <img src="static/images/fig2_simulation_controller.png" alt="Overview of the simulation-derived biological torque controller" loading="lazy">
+              <figcaption><strong>Figure 2. Overview of the simulation-derived biological torque controller.</strong> An imitation policy is trained with reinforcement learning in a musculoskeletal simulation to reproduce reference squatting motion, using an imitation reward as its learning signal. Knee muscle moments from the policy rollouts are then distilled into a temporal convolutional network that estimates the knee moment from onboard sensor signals, trained by minimizing the error against the simulated moments. On the exoskeleton, the estimated knee moment is scaled and delayed to generate assistive torque.</figcaption>
+            </figure>
+        </div>
+      </section>
+
+      <section class="section main-block">
+        <div>
+          <h2 class="title is-3 has-text-centered">Experimental Validation</h2>
+            <figure class="paper-figure is-narrow">
+              <img src="static/images/fig3_experimental_setup.png" alt="Experimental setup for validating the integrated exoskeleton and controller during squatting" loading="lazy">
+              <figcaption><strong>Figure 3. Experimental setup for validating the integrated exoskeleton and controller during squatting.</strong> A participant wearing the exoskeleton on the split-belt instrumented treadmill, whose embedded force plates measure ground reaction forces, with example placements of the electromyography sensors and reflective motion capture markers.</figcaption>
+            </figure>
+        </div>
+      </section>
+
+      <section class="section main-block is-light">
+        <div>
+          <h2 class="title is-3 has-text-centered">Results</h2>
+            <figure class="paper-figure">
+              <img src="static/images/fig4_squat_profiles.png" alt="Group-averaged knee kinematics, kinetics, and muscle activation during squatting" loading="lazy">
+              <figcaption><strong>Figure 4. Group-averaged knee kinematics, kinetics, and muscle activation during squatting.</strong> (a) Knee angle, (b) biological knee extension moment with commanded torque, (c) vastus medialis activation, and (d) medial gastrocnemius activation over the normalized squat cycle. Solid curves represent group means across participants, and shaded regions represent &plusmn;1 standard deviation. Blue and brown indicate squatting without (No Exo) and with (Exo) the exoskeleton, respectively, and the dashed gray curve indicates the commanded torque with the exoskeleton. Muscle activation is expressed as a percentage of each participant's maximum voluntary contraction (%MVC).</figcaption>
+            </figure>
+
+            <figure class="paper-figure is-narrow">
+              <img src="static/images/fig5_peak_values.png" alt="Peak biological knee extension moment and muscle activation with and without the exoskeleton" loading="lazy">
+              <figcaption><strong>Figure 5. Peak biological knee extension moment and muscle activation with and without the exoskeleton.</strong> (a) Peak biological knee extension moment, (b) peak vastus medialis activation, and (c) peak medial gastrocnemius activation without (No Exo) and with (Exo) the exoskeleton. Bars represent group means, and error bars represent &plusmn;1 standard deviation across participants. Asterisks indicate a significant difference between conditions (<em>p</em>&lt;0.05, paired <em>t</em>-test).</figcaption>
+            </figure>
+
+            <div class="paper-table">
+              <p class="table-title"><strong>Table II.</strong> Comparison with Existing Knee Exoskeleton Platforms</p>
+              <div class="table-container">
+                <table class="table is-fullwidth is-narrow is-hoverable">
+                  <thead>
+                    <tr><th>Device</th><th>Validation Subjects</th><th class="has-text-centered">Device Mass (kg)</th><th class="has-text-centered">Peak Torque (Nm)</th><th>Tasks</th><th>Reported Reduction</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="is-selected-row"><td><strong>This Study</strong></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">18</td><td>Squatting</td><td>26.7% vastus medialis activation</td></tr>
+                    <tr><td><a href="https://doi.org/10.1109/LRA.2022.3145580" target="_blank">Nesler et al.</a></td><td>1 able-bodied</td><td class="has-text-centered">1.6<sup>a</sup></td><td class="has-text-centered">30</td><td>Lifting and lowering</td><td>78.9% vastus medialis activation</td></tr>
+                    <tr><td><a href="https://doi.org/10.1126/sciadv.adq0288" target="_blank">Lee et al.</a></td><td>10 able-bodied</td><td class="has-text-centered">4.4</td><td class="has-text-centered">15</td><td>Level walking, ramps, and stairs</td><td>6.2% metabolic cost<sup>c</sup></td></tr>
+                    <tr><td><a href="https://doi.org/10.34133/cbsystems.0576" target="_blank">Zhang et al.</a></td><td>6 able-bodied</td><td class="has-text-centered">3.2</td><td class="has-text-centered">18</td><td>Level walking, ramp and stair ascent</td><td>4.3&ndash;12.0% metabolic cost</td></tr>
+                    <tr><td><a href="https://doi.org/10.1109/LRA.2025.3551543" target="_blank">Boon et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">2.6<sup>a</sup></td><td class="has-text-centered">55</td><td>Stair ascent</td><td>26% vastus medialis activation</td></tr>
+                    <tr><td><a href="https://doi.org/10.1109/TMECH.2021.3081367" target="_blank">Chen et al.</a></td><td>2 able-bodied</td><td class="has-text-centered">4.1</td><td class="has-text-centered">35</td><td>Kneeling</td><td>18.4% vastus medialis activation<sup>b,c</sup></td></tr>
+                    <tr><td><a href="https://doi.org/10.1109/TRO.2022.3170287" target="_blank">Huang et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">14</td><td>Level walking</td><td>19.6% vastus medialis activation<sup>c</sup></td></tr>
+                    <tr><td><a href="https://doi.org/10.1109/ICORR55369.2022.9896571" target="_blank">Sarkisian et al.</a></td><td>1 post-stroke</td><td class="has-text-centered">3.6<sup>a</sup></td><td class="has-text-centered">40</td><td>Sit-to-stand</td><td>29.3% vastus medialis activation</td></tr>
+                    <tr><td><a href="https://doi.org/10.1007/s10439-025-03696-0" target="_blank">Yu et al.</a></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">54</td><td>Squatting</td><td>38.1% vastus medialis activation,<br>12.8% metabolic cost</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note">Mass is for a bilateral device unless noted. Activation reductions are in peak values and relative to no exoskeleton unless noted. <sup>a</sup>Unilateral device. <sup>b</sup>Mean rather than peak activation. <sup>c</sup>Relative to the unpowered or zero-torque exoskeleton.</p>
+            </div>
+        </div>
+      </section>
+
+      <!-- End paper figures and tables -->
+
+      <!-- BibTeX citation -->
+      <section class="section main-block" id="BibTeX">
+        <div class="content">
+          <h2 class="title">BibTeX</h2>
+          <pre><code>BibTex Code Here</code></pre>
+        </div>
+      </section>
+      <!-- End BibTeX citation -->
       </div>
-    </div>
-  </section>
-  <!-- End abstract -->
 
-  <!-- Paper figures and tables (in paper order, captions verbatim from main.tex) -->
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Robotic Knee Exoskeleton Design</h2>
-        <figure class="paper-figure">
-          <img src="static/images/fig1_exoskeleton_overview.png" alt="Overview of the robotic knee exoskeleton design" loading="lazy">
-          <figcaption><strong>Figure 1. Overview of the robotic knee exoskeleton design.</strong> (a) Sagittal-plane view of the unilateral device, with straps, hooks, and cuffs at the thigh, shank, and ankle. (b) A participant wearing the bilateral device, shown left to right in sagittal standing, sagittal squatting, and frontal standing. (c) The high-level control board built around the embedded computer (top) and the low-level control board built around the microcontroller (bottom).</figcaption>
-        </figure>
-
-        <div class="paper-table is-compact">
-          <p class="table-title"><strong>Table I.</strong> Device Specifications</p>
-          <div class="table-container">
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr class="table-group"><th colspan="2">Mechanical</th></tr>
-                <tr><td>Total mass, bilateral<sup>*</sup> (kg)</td><td class="has-text-right">3.5</td></tr>
-                <tr><td>Unilateral mass (kg)</td><td class="has-text-right">1.3</td></tr>
-                <tr><td>Actuator mass (kg)</td><td class="has-text-right">0.49</td></tr>
-                <tr><td>Rated / peak torque<sup>**</sup> (Nm)</td><td class="has-text-right">9 / 22</td></tr>
-                <tr><td>Range of motion (deg)</td><td class="has-text-right">0&ndash;120</td></tr>
-                <tr class="table-group"><th colspan="2">Compute/Electrical</th></tr>
-                <tr><td>Inertial sensor communication</td><td class="has-text-right">SPI</td></tr>
-                <tr><td>Motor communication</td><td class="has-text-right">CAN</td></tr>
-                <tr><td>Low-to-High level communication</td><td class="has-text-right">CANFD</td></tr>
-                <tr><td>Low-level loop execution (&micro;s)</td><td class="has-text-right">~80</td></tr>
-                <tr><td>High/low-level round trip (ms)</td><td class="has-text-right">&lt;0.5</td></tr>
-                <tr><td>Estimated run time (h)</td><td class="has-text-right">~2</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="table-note"><sup>*</sup>Includes the battery and embedded electronics.<br>
-            <sup>**</sup>The stock motor driver limits output to 18&nbsp;Nm per the manufacturer's safety constraint.</p>
+      <!-- Interactive CAD viewer -->
+      <aside class="column is-4-desktop cad-column">
+        <div class="cad-panel">
+          <h3 class="title is-5 has-text-centered">Interactive CAD Model</h3>
+          <!-- TODO: replace placeholder_cube.glb with the exported knee exoskeleton GLB -->
+          <model-viewer src="static/models/placeholder_cube.glb"
+                        alt="Interactive 3D model (placeholder)"
+                        camera-controls auto-rotate shadow-intensity="1"
+                        touch-action="pan-y"></model-viewer>
+          <p class="cad-note">Placeholder model &middot; drag to rotate, scroll to zoom</p>
         </div>
+      </aside>
+
     </div>
-  </section>
-
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Simulation-Derived Biological Torque Control</h2>
-        <figure class="paper-figure is-narrow">
-          <img src="static/images/fig2_simulation_controller.png" alt="Overview of the simulation-derived biological torque controller" loading="lazy">
-          <figcaption><strong>Figure 2. Overview of the simulation-derived biological torque controller.</strong> An imitation policy is trained with reinforcement learning in a musculoskeletal simulation to reproduce reference squatting motion, using an imitation reward as its learning signal. Knee muscle moments from the policy rollouts are then distilled into a temporal convolutional network that estimates the knee moment from onboard sensor signals, trained by minimizing the error against the simulated moments. On the exoskeleton, the estimated knee moment is scaled and delayed to generate assistive torque.</figcaption>
-        </figure>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Experimental Validation</h2>
-        <figure class="paper-figure is-narrow">
-          <img src="static/images/fig3_experimental_setup.png" alt="Experimental setup for validating the integrated exoskeleton and controller during squatting" loading="lazy">
-          <figcaption><strong>Figure 3. Experimental setup for validating the integrated exoskeleton and controller during squatting.</strong> A participant wearing the exoskeleton on the split-belt instrumented treadmill, whose embedded force plates measure ground reaction forces, with example placements of the electromyography sensors and reflective motion capture markers.</figcaption>
-        </figure>
-    </div>
-  </section>
-
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Results</h2>
-        <figure class="paper-figure">
-          <img src="static/images/fig4_squat_profiles.png" alt="Group-averaged knee kinematics, kinetics, and muscle activation during squatting" loading="lazy">
-          <figcaption><strong>Figure 4. Group-averaged knee kinematics, kinetics, and muscle activation during squatting.</strong> (a) Knee angle, (b) biological knee extension moment with commanded torque, (c) vastus medialis activation, and (d) medial gastrocnemius activation over the normalized squat cycle. Solid curves represent group means across participants, and shaded regions represent &plusmn;1 standard deviation. Blue and brown indicate squatting without (No Exo) and with (Exo) the exoskeleton, respectively, and the dashed gray curve indicates the commanded torque with the exoskeleton. Muscle activation is expressed as a percentage of each participant's maximum voluntary contraction (%MVC).</figcaption>
-        </figure>
-
-        <figure class="paper-figure is-narrow">
-          <img src="static/images/fig5_peak_values.png" alt="Peak biological knee extension moment and muscle activation with and without the exoskeleton" loading="lazy">
-          <figcaption><strong>Figure 5. Peak biological knee extension moment and muscle activation with and without the exoskeleton.</strong> (a) Peak biological knee extension moment, (b) peak vastus medialis activation, and (c) peak medial gastrocnemius activation without (No Exo) and with (Exo) the exoskeleton. Bars represent group means, and error bars represent &plusmn;1 standard deviation across participants. Asterisks indicate a significant difference between conditions (<em>p</em>&lt;0.05, paired <em>t</em>-test).</figcaption>
-        </figure>
-
-        <div class="paper-table">
-          <p class="table-title"><strong>Table II.</strong> Comparison with Existing Knee Exoskeleton Platforms</p>
-          <div class="table-container">
-            <table class="table is-fullwidth is-narrow is-hoverable">
-              <thead>
-                <tr><th>Device</th><th>Validation Subjects</th><th class="has-text-centered">Device Mass (kg)</th><th class="has-text-centered">Peak Torque (Nm)</th><th>Tasks</th><th>Reported Reduction</th></tr>
-              </thead>
-              <tbody>
-                <tr class="is-selected-row"><td><strong>This Study</strong></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">18</td><td>Squatting</td><td>26.7% vastus medialis activation</td></tr>
-                <tr><td><a href="https://doi.org/10.1109/LRA.2022.3145580" target="_blank">Nesler et al.</a></td><td>1 able-bodied</td><td class="has-text-centered">1.6<sup>a</sup></td><td class="has-text-centered">30</td><td>Lifting and lowering</td><td>78.9% vastus medialis activation</td></tr>
-                <tr><td><a href="https://doi.org/10.1126/sciadv.adq0288" target="_blank">Lee et al.</a></td><td>10 able-bodied</td><td class="has-text-centered">4.4</td><td class="has-text-centered">15</td><td>Level walking, ramps, and stairs</td><td>6.2% metabolic cost<sup>c</sup></td></tr>
-                <tr><td><a href="https://doi.org/10.34133/cbsystems.0576" target="_blank">Zhang et al.</a></td><td>6 able-bodied</td><td class="has-text-centered">3.2</td><td class="has-text-centered">18</td><td>Level walking, ramp and stair ascent</td><td>4.3&ndash;12.0% metabolic cost</td></tr>
-                <tr><td><a href="https://doi.org/10.1109/LRA.2025.3551543" target="_blank">Boon et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">2.6<sup>a</sup></td><td class="has-text-centered">55</td><td>Stair ascent</td><td>26% vastus medialis activation</td></tr>
-                <tr><td><a href="https://doi.org/10.1109/TMECH.2021.3081367" target="_blank">Chen et al.</a></td><td>2 able-bodied</td><td class="has-text-centered">4.1</td><td class="has-text-centered">35</td><td>Kneeling</td><td>18.4% vastus medialis activation<sup>b,c</sup></td></tr>
-                <tr><td><a href="https://doi.org/10.1109/TRO.2022.3170287" target="_blank">Huang et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">14</td><td>Level walking</td><td>19.6% vastus medialis activation<sup>c</sup></td></tr>
-                <tr><td><a href="https://doi.org/10.1109/ICORR55369.2022.9896571" target="_blank">Sarkisian et al.</a></td><td>1 post-stroke</td><td class="has-text-centered">3.6<sup>a</sup></td><td class="has-text-centered">40</td><td>Sit-to-stand</td><td>29.3% vastus medialis activation</td></tr>
-                <tr><td><a href="https://doi.org/10.1007/s10439-025-03696-0" target="_blank">Yu et al.</a></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">54</td><td>Squatting</td><td>38.1% vastus medialis activation,<br>12.8% metabolic cost</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="table-note">Mass is for a bilateral device unless noted. Activation reductions are in peak values and relative to no exoskeleton unless noted. <sup>a</sup>Unilateral device. <sup>b</sup>Mean rather than peak activation. <sup>c</sup>Relative to the unpowered or zero-torque exoskeleton.</p>
-        </div>
-    </div>
-  </section>
-
-  <!-- End paper figures and tables -->
-
-  <!-- BibTeX citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <h2 class="title">BibTeX</h2>
-      <pre><code>BibTex Code Here</code></pre>
-    </div>
-  </section>
-  <!-- End BibTeX citation -->
+  </div>
+  <!-- End main layout -->
 
   <footer class="footer">
     <div class="container">
