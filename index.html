@@ -175,11 +175,11 @@
       <aside class="column is-4-desktop side-column">
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Interactive CAD Model</h3>
-          <!-- TODO: replace placeholder_cube.glb with the exported knee exoskeleton GLB -->
           <div class="viewer-wrap">
-            <model-viewer src="static/models/placeholder_cube.glb"
-                          alt="Interactive 3D model (placeholder)"
+            <model-viewer src="static/models/knee_exo_v2.glb?v=1"
+                          alt="Interactive 3D CAD model of the knee exoskeleton"
                           camera-controls auto-rotate shadow-intensity="1"
+                          environment-image="neutral" exposure="1.2"
                           interaction-prompt="none"
                           camera-orbit="45deg 54.74deg auto"
                           touch-action="pan-y"></model-viewer>
@@ -193,7 +193,7 @@
               </button>
             </div>
           </div>
-          <p class="side-note">Placeholder model &middot; drag to rotate, scroll to zoom</p>
+          <p class="side-note">Knee exoskeleton CAD &middot; drag to rotate, scroll to zoom</p>
         </div>
       </aside>
     </div>
