@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Social / search metadata (filled in Step 2) -->
-  <meta name="description" content="DESCRIPTION META TAG">
-  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG">
-  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG">
+  <!-- Social / search metadata -->
+  <meta name="description" content="An open-source knee exoskeleton, built from off-the-shelf components and widely available fabrication tools, with a biological torque controller derived entirely from simulation.">
+  <meta property="og:title" content="Design and Validation of a Robotic Knee Exoskeleton with Musculoskeletal Simulation-Derived Biological Torque Control">
+  <meta property="og:description" content="An open-source knee exoskeleton, built from off-the-shelf components and widely available fabrication tools, with a biological torque controller derived entirely from simulation.">
   <meta property="og:url" content="https://rajiv-j.github.io/Open-Source-Knee-Exo/">
-  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="keywords" content="Prosthetics and Exoskeletons, Reinforcement Learning, Wearable Robotics">
 
-  <title>Academic Project Page</title>
+  <title>Design and Validation of a Robotic Knee Exoskeleton with Musculoskeletal Simulation-Derived Biological Torque Control</title>
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
@@ -36,26 +36,39 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Academic Project Page</h1>
+            <h1 class="title is-1 publication-title">Design and Validation of a Robotic Knee Exoskeleton with Musculoskeletal Simulation-Derived Biological Torque Control</h1>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block"><a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a>,</span>
-              <span class="author-block"><a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a>,</span>
-              <span class="author-block"><a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a></span>
+              <span class="author-block">Rajiv V. Joshi<sup>1</sup>,</span>
+              <span class="author-block">Jimin An<sup>1</sup>,</span>
+              <span class="author-block">Ilseung Park<sup>1</sup>,</span>
+              <span class="author-block">Dawit Lee<sup>2</sup>,</span>
+              <span class="author-block">Inseung Kang<sup>1</sup></span>
             </div>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block">Institution Name<br>Conference name and year</span>
+              <span class="author-block"><sup>1</sup>Carnegie Mellon University</span>
+              <span class="author-block"><sup>2</sup>Stanford University</span>
             </div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
                 <!-- arXiv link -->
+                <!-- TODO: replace "#" with the arXiv URL once the paper is on arXiv -->
                 <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
+                  <a href="#" target="_blank"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="ai ai-arxiv"></i></span>
                     <span>arXiv</span>
+                  </a>
+                </span>
+
+                <!-- Code link -->
+                <span class="link-block">
+                  <a href="https://github.com/MetaMobilityLabCMU/Knee-Exoskeleton-Project" target="_blank"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
                   </a>
                 </span>
               </div>
@@ -86,7 +99,7 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ullamcorper tellus sed ante aliquam tempus. Etiam porttitor urna feugiat nibh elementum, et tempor dolor mattis.
+              Data-driven controllers have enabled lower-limb robotic exoskeletons to adapt assistance to the user across many tasks. A leading example is biological torque control, which estimates the user's own joint moment from onboard sensors and assists in proportion to that estimate. However, its estimators are trained on data recorded with the target device, so deploying the controller on new hardware requires collecting new data. Existing open-source efforts release hardware, software, or controllers separately, so this data collection must still be repeated on the assembled device. Here, we present an open-source knee exoskeleton, built from off-the-shelf components and widely available fabrication tools, with a biological torque controller derived entirely from simulation. A muscle-driven imitation policy reproduces squatting motions from an open biomechanics dataset, and the resulting knee moments are distilled into an estimator that uses only onboard sensors, so no training data are recorded on the device. In seven able-bodied participants, assistance reduced peak biological knee extension moment by 21.5% and peak vastus medialis activation by 26.7% during squatting, relative to squatting without the exoskeleton (p&lt;0.05). Our results demonstrate that a biological torque controller derived from simulation can transfer to physical hardware without device-specific data collection. Because the hardware and training pipeline are released together, research groups can train and compare knee exoskeleton controllers on shared hardware without additional data collection overhead.
             </p>
           </div>
         </div>
