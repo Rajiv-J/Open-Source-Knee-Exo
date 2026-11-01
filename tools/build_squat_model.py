@@ -4,7 +4,8 @@
 Reads a Hyfydy model (.hfd), a SCONE/Hyfydy motion file (.sto) and a folder
 of bone meshes (.vtp), and writes a GLB with:
   - bones for every body, animated from the recorded body positions/rotations
-  - muscles drawn as tubes along their point paths
+  - muscles drawn as tubes along their point paths, one material per muscle
+    (named "muscle:<name>") so the page can colour them by activation
   - an optional mirrored left leg (visual copy of the right leg)
   - a floor disc at y = 0
 
@@ -12,11 +13,15 @@ Example:
   python3 tools/build_squat_model.py \
       --hfd H0709v2j.hfd --sto episode_10_895.335.sto \
       --geometry path/to/geometry --mirror --start 2.09 --end 9.06 \
-      --out static/models/squat_model.glb
+      --out static/models/squat_model.glb --data-out static/models/squat_data.json
+
+The JSON holds, per animation frame, each muscle's activation and the total
+knee muscle moment (sum of '<muscle>.knee_angle_r.moment', extension +, Nm).
 
 Requires: numpy, trimesh, pygltflib
 """
 import argparse
+import json
 import os
 import re
 
@@ -32,7 +37,7 @@ MESH_FALLBACKS = {
 }
 
 BONE_COLOR = [0.92, 0.89, 0.82, 1.0]
-MUSCLE_COLOR = [0.78, 0.12, 0.12, 1.0]
+MUSCLE_COLOR = [0.45, 0.22, 0.22, 1.0]  # relaxed colour; the page tints by activation
 FLOOR_COLOR = [0.85, 0.85, 0.85, 1.0]
 MUSCLE_RADIUS = 0.009
 FRAME_STEP = 3  # keep every Nth .sto row
@@ -170,11 +175,16 @@ class GlbWriter:
                 baseColorFactor=rgba, metallicFactor=0.0, roughnessFactor=0.7)))
         return len(self.g.materials) - 1
 
-    def mesh(self, verts, faces, material, name):
+    def geometry(self, verts, faces):
+        """Upload a triangle mesh; returns (position, normal, index) accessors."""
         m = trimesh.Trimesh(verts, faces, process=True)
         pos = self.accessor(m.vertices.astype(np.float32), gl.VEC3, gl.ARRAY_BUFFER, True)
         nrm = self.accessor(m.vertex_normals.astype(np.float32), gl.VEC3, gl.ARRAY_BUFFER)
         idx = self.accessor(m.faces.astype(np.uint32).ravel(), gl.SCALAR, gl.ELEMENT_ARRAY_BUFFER)
+        return pos, nrm, idx
+
+    def mesh(self, geometry, material, name):
+        pos, nrm, idx = geometry
         self.g.meshes.append(gl.Mesh(name=name, primitives=[gl.Primitive(
             attributes=gl.Attributes(POSITION=pos, NORMAL=nrm), indices=idx, material=material)]))
         return len(self.g.meshes) - 1
@@ -204,6 +214,7 @@ def main():
     ap.add_argument("--mirror", action="store_true", help="add a mirrored left leg")
     ap.add_argument("--start", type=float, default=None, help="clip start time (s)")
     ap.add_argument("--end", type=float, default=None, help="clip end time (s)")
+    ap.add_argument("--data-out", default=None, help="write activations + knee moment JSON")
     args = ap.parse_args()
 
     model = one(parse_zml(open(args.hfd).read()), "model")
@@ -243,7 +254,6 @@ def main():
 
     w = GlbWriter()
     bone_mat = w.material(BONE_COLOR, "bone")
-    muscle_mat = w.material(MUSCLE_COLOR, "muscle")
     floor_mat = w.material(FLOOR_COLOR, "floor")
     root = w.node("squat_model", translation=(-centre).tolist())
 
@@ -262,7 +272,7 @@ def main():
             if mirror:
                 v = v * [1, 1, -1]
                 f = f[:, ::-1]
-            mesh_cache[key] = w.mesh(v, f, bone_mat, fname + (" (mirrored)" if mirror else ""))
+            mesh_cache[key] = w.mesh(w.geometry(v, f), bone_mat, fname + (" (mirrored)" if mirror else ""))
         return mesh_cache[key]
 
     channels, samplers = [], []
@@ -300,7 +310,7 @@ def main():
     tube = trimesh.creation.cylinder(radius=MUSCLE_RADIUS, height=1.0, sections=12)
     tube.apply_translation([0, 0, 0.5])
     tube.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))  # z -> y
-    tube_mesh = w.mesh(tube.vertices, tube.faces, muscle_mat, "muscle_segment")
+    tube_geom = w.geometry(tube.vertices, tube.faces)
     for suffix, sign in sides:
         for mus in muscles:
             pts = []
@@ -309,6 +319,7 @@ def main():
                 local = np.broadcast_to(vec(one(pt, "pos")) * [1, 1, sign], p.shape)
                 pts.append(p + quat_rotate(q, local))
             label = one(mus, "name").replace("_r", suffix) if sign < 0 else one(mus, "name")
+            tube_mesh = w.mesh(tube_geom, w.material(MUSCLE_COLOR, "muscle:" + label), label)
             for i in range(len(pts) - 1):
                 d = pts[i + 1] - pts[i]
                 length = np.linalg.norm(d, axis=1)
@@ -321,10 +332,22 @@ def main():
     disc = trimesh.creation.cylinder(radius=0.45, height=0.01, sections=64)
     disc.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))
     disc.apply_translation([0, -0.005, 0])
-    w.node("floor", mesh=w.mesh(disc.vertices, disc.faces, floor_mat, "floor"))
+    w.node("floor", mesh=w.mesh(w.geometry(disc.vertices, disc.faces), floor_mat, "floor"))
 
     w.g.animations = [gl.Animation(name="squat", channels=channels, samplers=samplers)]
     w.save(args.out)
+
+    if args.data_out:
+        knee = sum(data[:, i] for h, i in col.items() if h.endswith(".knee_angle_r.moment"))
+        out = {
+            "times": np.round(times, 3).tolist(),
+            "knee_moment": np.round(knee, 2).tolist(),
+            "activations": {one(m, "name"): np.round(data[:, col[one(m, "name") + ".activation"]], 3).tolist()
+                            for m in muscles},
+        }
+        with open(args.data_out, "w") as f:
+            json.dump(out, f, separators=(",", ":"))
+        print(f"Wrote {args.data_out}")
     print(f"Wrote {args.out}: {len(times)} frames, {times[-1]:.2f} s, "
           f"{os.path.getsize(args.out) / 1e6:.2f} MB")
 

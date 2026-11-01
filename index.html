@@ -29,6 +29,7 @@
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js?v=3"></script>
   <script defer src="static/js/viewer-controls.js?v=3"></script>
+  <script defer src="static/js/squat-viewer.js?v=3"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -211,7 +212,8 @@
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Squatting Simulation</h3>
           <div class="viewer-wrap">
-            <model-viewer src="static/models/squat_model.glb?v=3"
+            <model-viewer id="squat-viewer" src="static/models/squat_model.glb?v=4"
+                          data-motion="static/models/squat_data.json?v=4"
                           alt="Hyfydy musculoskeletal simulation of squatting"
                           camera-controls disable-pan disable-zoom autoplay
                           interaction-prompt="none"
@@ -223,7 +225,7 @@
               </button>
             </div>
           </div>
-          <p class="side-note">Hyfydy simulation &middot; drag to rotate</p>
+          <p class="side-note">Hyfydy simulation &middot; muscle color shows activation (pale = 0, red = 1) &middot; drag to rotate</p>
           </div>
         </div>
       </aside>
