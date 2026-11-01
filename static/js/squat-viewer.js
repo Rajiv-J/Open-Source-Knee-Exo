@@ -8,7 +8,7 @@
   const viewer = document.getElementById('squat-viewer');
   if (!viewer) return;
 
-  const RELAXED = [0.45, 0.22, 0.22]; // activation 0
+  const RELAXED = [0.11, 0.08, 0.61]; // activation 0
   const ACTIVE = [0.90, 0.01, 0.01];  // activation 1
 
   // Linear interpolation of series at time t (times ascending).

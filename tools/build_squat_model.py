@@ -4,8 +4,10 @@
 Reads a Hyfydy model (.hfd), a SCONE/Hyfydy motion file (.sto) and a folder
 of bone meshes (.vtp), and writes a GLB with:
   - bones for every body, animated from the recorded body positions/rotations
-  - muscles drawn as tubes along their point paths, one material per muscle
-    (named "muscle:<name>") so the page can colour them by activation
+  - muscles drawn SCONE-style: a thin white tendon along the whole path and a
+    thick rounded belly whose length follows the recorded fiber length and
+    whose thickness scales with sqrt(max isometric force). Each belly has its
+    own material ("muscle:<name>") so the page can colour it by activation.
   - an optional mirrored left leg (visual copy of the right leg)
   - a floor disc at y = 0
 
@@ -36,10 +38,12 @@ MESH_FALLBACKS = {
     "tibia.vtp": ["r_tibia.vtp", "tibia_r.vtp"],
 }
 
-BONE_COLOR = [0.92, 0.89, 0.82, 1.0]
-MUSCLE_COLOR = [0.45, 0.22, 0.22, 1.0]  # relaxed colour; the page tints by activation
+BONE_COLOR = [0.80, 0.70, 0.52, 1.0]    # warm ivory (linear RGB)
+MUSCLE_COLOR = [0.11, 0.08, 0.61, 1.0]  # relaxed blue-purple; the page tints by activation
+TENDON_COLOR = [0.85, 0.85, 0.85, 1.0]
 FLOOR_COLOR = [0.85, 0.85, 0.85, 1.0]
-MUSCLE_RADIUS = 0.009
+TENDON_RADIUS = 0.0045
+BELLY_RADIUS_PER_SQRT_N = 0.0003  # belly radius (m) = this * sqrt(max isometric force)
 FRAME_STEP = 3  # keep every Nth .sto row
 
 
@@ -168,11 +172,11 @@ class GlbWriter:
         self.g.accessors.append(acc)
         return len(self.g.accessors) - 1
 
-    def material(self, rgba, name):
+    def material(self, rgba, name, roughness=0.7):
         self.g.materials.append(gl.Material(
             name=name, doubleSided=True,
             pbrMetallicRoughness=gl.PbrMetallicRoughness(
-                baseColorFactor=rgba, metallicFactor=0.0, roughnessFactor=0.7)))
+                baseColorFactor=rgba, metallicFactor=0.0, roughnessFactor=roughness)))
         return len(self.g.materials) - 1
 
     def geometry(self, verts, faces):
@@ -253,7 +257,8 @@ def main():
     sides = [("", 1.0)] + ([("_l", -1.0)] if args.mirror else [])
 
     w = GlbWriter()
-    bone_mat = w.material(BONE_COLOR, "bone")
+    bone_mat = w.material(BONE_COLOR, "bone", roughness=0.45)
+    tendon_mat = w.material(TENDON_COLOR, "tendon")
     floor_mat = w.material(FLOOR_COLOR, "floor")
     root = w.node("squat_model", translation=(-centre).tolist())
 
@@ -306,27 +311,67 @@ def main():
                 off = vec(one(m, "pos")) * [1, 1, sign]
                 w.node(fname, parent=n, mesh=bone_mesh(fname, sign < 0), translation=off.tolist())
 
-    # Muscles: one tube per path segment, stretched between its two points.
-    tube = trimesh.creation.cylinder(radius=MUSCLE_RADIUS, height=1.0, sections=12)
-    tube.apply_translation([0, 0, 0.5])
-    tube.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))  # z -> y
-    tube_geom = w.geometry(tube.vertices, tube.faces)
+    # Muscles (SCONE-style): thin tendon along the full path + thick belly.
+    def unit_tube(radius):
+        tube = trimesh.creation.cylinder(radius=radius, height=1.0, sections=16)
+        tube.apply_translation([0, 0, 0.5])
+        tube.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))  # z -> y
+        return w.geometry(tube.vertices, tube.faces)
+
+    def segment_node(name, mesh, a, b):
+        """Node stretching a unit +Y tube from points a to b (per frame)."""
+        d = b - a
+        length = np.maximum(np.linalg.norm(d, axis=1), 1e-6)
+        n = w.node(name, parent=root, mesh=mesh)
+        animate(n, "translation", a, gl.VEC3)
+        animate(n, "rotation", quat_from_y_to(d / length[:, None])[:, [1, 2, 3, 0]], gl.VEC4)
+        animate(n, "scale", np.stack([np.ones_like(length), length, np.ones_like(length)], 1), gl.VEC3)
+
+    def point_at(pts, s):
+        """Point at arc length s (per frame) along the polyline pts (list of (N,3))."""
+        out = pts[-1].copy()
+        done = np.zeros(len(s), bool)
+        start = np.zeros(len(s))
+        for a, b in zip(pts[:-1], pts[1:]):
+            seg = np.linalg.norm(b - a, axis=1)
+            here = ~done & (s <= start + seg)
+            f = np.clip((s - start) / np.maximum(seg, 1e-9), 0, 1)[:, None]
+            out[here] = (a + f * (b - a))[here]
+            done |= here
+            start += seg
+        return out
+
+    tendon_geom = unit_tube(TENDON_RADIUS)
+    tendon_mesh = w.mesh(tendon_geom, tendon_mat, "tendon")
     for suffix, sign in sides:
         for mus in muscles:
+            name = one(mus, "name")
+            label = name.replace("_r", suffix) if sign < 0 else name
             pts = []
             for pt in one(mus, "path"):
                 p, q = world_tracks(one(pt, "body"), sign)
                 local = np.broadcast_to(vec(one(pt, "pos")) * [1, 1, sign], p.shape)
                 pts.append(p + quat_rotate(q, local))
-            label = one(mus, "name").replace("_r", suffix) if sign < 0 else one(mus, "name")
-            tube_mesh = w.mesh(tube_geom, w.material(MUSCLE_COLOR, "muscle:" + label), label)
+
+            # Tendon: the whole path
             for i in range(len(pts) - 1):
-                d = pts[i + 1] - pts[i]
-                length = np.linalg.norm(d, axis=1)
-                n = w.node(f"{label}_{i}", parent=root, mesh=tube_mesh)
-                animate(n, "translation", pts[i], gl.VEC3)
-                animate(n, "rotation", quat_from_y_to(d / length[:, None])[:, [1, 2, 3, 0]], gl.VEC4)
-                animate(n, "scale", np.stack([np.ones_like(length), length, np.ones_like(length)], 1), gl.VEC3)
+                segment_node(f"{label}_tendon_{i}", tendon_mesh, pts[i], pts[i + 1])
+
+            # Belly: fiber share of the path, centred, with rounded ends
+            path_len = sum(np.linalg.norm(b - a, axis=1) for a, b in zip(pts[:-1], pts[1:]))
+            fiber = data[:, col[name + ".fiber_length"]] * data[:, col[name + ".cos_pennation_angle"]]
+            share = np.clip(fiber / data[:, col[name + ".mtu_length"]], 0.05, 1.0)
+            s0 = path_len * (1 - share) / 2
+            a, b = point_at(pts, s0), point_at(pts, s0 + path_len * share)
+
+            radius = BELLY_RADIUS_PER_SQRT_N * np.sqrt(float(one(mus, "max_isometric_force")))
+            mat = w.material(MUSCLE_COLOR, "muscle:" + label)
+            segment_node(f"{label}_belly", w.mesh(unit_tube(radius), mat, label + "_belly"), a, b)
+            cap = trimesh.creation.icosphere(subdivisions=2, radius=radius)
+            cap_mesh = w.mesh(w.geometry(cap.vertices, cap.faces), mat, label + "_cap")
+            for end, pos in (("a", a), ("b", b)):
+                n = w.node(f"{label}_cap_{end}", parent=root, mesh=cap_mesh)
+                animate(n, "translation", pos, gl.VEC3)
 
     # Floor
     disc = trimesh.creation.cylinder(radius=0.45, height=0.01, sections=64)

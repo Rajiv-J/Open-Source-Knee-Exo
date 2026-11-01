@@ -29,7 +29,7 @@
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js?v=3"></script>
   <script defer src="static/js/viewer-controls.js?v=3"></script>
-  <script defer src="static/js/squat-viewer.js?v=6"></script>
+  <script defer src="static/js/squat-viewer.js?v=7"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -212,8 +212,8 @@
         <div class="side-panel">
           <h3 class="title is-5 has-text-centered">Squatting Simulation</h3>
           <div class="viewer-wrap">
-            <model-viewer id="squat-viewer" class="is-short" src="static/models/squat_model.glb?v=4"
-                          data-motion="static/models/squat_data.json?v=4"
+            <model-viewer id="squat-viewer" class="is-short" src="static/models/squat_model.glb?v=5"
+                          data-motion="static/models/squat_data.json?v=5"
                           alt="Hyfydy musculoskeletal simulation of squatting"
                           camera-controls disable-pan disable-zoom autoplay
                           interaction-prompt="none"
@@ -234,7 +234,7 @@
             <canvas id="knee-plot" role="img" aria-label="Knee muscle moment over the squat, drawn in sync with the animation"></canvas>
             <p class="plot-readout" aria-live="off"></p>
           </div>
-          <p class="side-note">Hyfydy simulation &middot; muscle color shows activation (muted = 0, bright red = 1) &middot; drag to rotate</p>
+          <p class="side-note">Hyfydy simulation &middot; muscle color shows activation (purple = 0, red = 1) &middot; drag to rotate</p>
           </div>
         </div>
       </aside>
