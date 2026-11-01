@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Bump ?v= when editing site CSS/JS so browsers load the new version -->
-  <link rel="stylesheet" href="static/css/index.css?v=20">
+  <link rel="stylesheet" href="static/css/index.css?v=17">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -35,7 +35,6 @@
   <script defer src="static/js/results-panel.js?v=2"></script>
   <script defer src="static/js/bibtex-copy.js?v=1"></script>
   <script defer src="static/js/panel-expand.js?v=1"></script>
-  <script defer src="static/js/cad-callouts.js?v=4"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -182,7 +181,7 @@
             <span class="icon-collapse is-hidden"><i class="fas fa-compress"></i></span>
           </button>
           <div class="viewer-wrap">
-            <model-viewer id="cad-viewer" src="static/models/knee_exo_v2.glb?v=1"
+            <model-viewer src="static/models/knee_exo_v2.glb?v=1"
                           alt="Interactive 3D CAD model of the knee exoskeleton"
                           camera-controls auto-rotate shadow-intensity="1"
                           environment-image="neutral" exposure="1.2"
@@ -190,10 +189,6 @@
                           camera-orbit="45deg 54.74deg auto"
                           touch-action="pan-y"></model-viewer>
             <div class="viewer-controls">
-              <button type="button" class="viewer-btn js-callout-toggle" title="Hide part labels" aria-label="Hide part labels">
-                <span class="icon-eye"><i class="fas fa-eye"></i></span>
-                <span class="icon-eye-off is-hidden"><i class="fas fa-eye-slash"></i></span>
-              </button>
               <button type="button" class="viewer-btn js-rotate-toggle" title="Pause rotation" aria-label="Pause rotation">
                 <span class="icon-pause"><i class="fas fa-pause"></i></span>
                 <span class="icon-play is-hidden"><i class="fas fa-play"></i></span>
