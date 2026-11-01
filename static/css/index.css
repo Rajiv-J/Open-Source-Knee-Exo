@@ -211,7 +211,7 @@ body {
 
 /* Wide tables scroll sideways on phones instead of squashing */
 .paper-table:not(.is-compact) .table {
-  min-width: 760px;
+  min-width: 640px;
 }
 
 /* ---------- Project video placeholder ---------- */
