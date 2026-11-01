@@ -1,7 +1,8 @@
 // Controls for <model-viewer> panels: pause/play auto-rotation and reset view.
-// Auto-rotation turns back on when a viewer scrolls out of view and returns.
+// Auto-rotation (where a pause button exists) turns back on when a viewer
+// scrolls out of view and returns. "Home" returns to the viewer's starting
+// camera-orbit attribute.
 (function () {
-  const ISO_ORBIT = '45deg 54.74deg auto';
 
   function setRotating(viewer, toggle, rotating) {
     viewer.autoRotate = rotating;
@@ -13,14 +14,14 @@
     toggle.querySelector('.icon-play').classList.toggle('is-hidden', rotating);
   }
 
-  function resetView(viewer) {
+  function resetView(viewer, homeOrbit) {
     // Re-applying the same orbit value is ignored, so clear it first.
     viewer.cameraOrbit = '';
     viewer.cameraTarget = '';
     viewer.fieldOfView = '';
     viewer.updateComplete.then(function () {
       viewer.resetTurntableRotation(0);
-      viewer.cameraOrbit = ISO_ORBIT;
+      viewer.cameraOrbit = homeOrbit;
       viewer.cameraTarget = 'auto auto auto';
       viewer.fieldOfView = 'auto';
     });
@@ -30,6 +31,7 @@
     const wrap = viewer.closest('.viewer-wrap');
     const toggle = wrap && wrap.querySelector('.js-rotate-toggle');
     const reset = wrap && wrap.querySelector('.js-reset-view');
+    const homeOrbit = viewer.getAttribute('camera-orbit') || 'auto auto auto';
 
     if (toggle) {
       toggle.addEventListener('click', function () {
@@ -37,15 +39,17 @@
       });
     }
     if (reset) {
-      reset.addEventListener('click', function () { resetView(viewer); });
+      reset.addEventListener('click', function () { resetView(viewer, homeOrbit); });
     }
 
     // Restart auto-rotation once the viewer has left the screen.
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) setRotating(viewer, toggle, true);
-      });
-    }).observe(viewer);
+    if (toggle) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) setRotating(viewer, toggle, true);
+        });
+      }).observe(viewer);
+    }
   }
 
   // Wait until the model-viewer component has loaded before wiring controls.
