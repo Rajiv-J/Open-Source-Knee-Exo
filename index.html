@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Bump ?v= when editing site CSS/JS so browsers load the new version -->
-  <link rel="stylesheet" href="static/css/index.css?v=6">
+  <link rel="stylesheet" href="static/css/index.css?v=8">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -29,7 +29,9 @@
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js?v=3"></script>
   <script defer src="static/js/viewer-controls.js?v=3"></script>
-  <script defer src="static/js/squat-viewer.js?v=7"></script>
+  <script defer src="static/js/motion-plot.js?v=1"></script>
+  <script defer src="static/js/squat-viewer.js?v=8"></script>
+  <script defer src="static/js/results-panel.js?v=2"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -241,43 +243,83 @@
     </div>
     <!-- End controller and experiment group -->
 
-    <section class="section main-block is-light is-full">
-      <div>
-        <h2 class="title is-3 has-text-centered">Results</h2>
-          <figure class="paper-figure">
-            <img src="static/images/fig4_squat_profiles.png" alt="Group-averaged knee kinematics, kinetics, and muscle activation during squatting" loading="lazy">
-            <figcaption><strong>Figure 4. Group-averaged knee kinematics, kinetics, and muscle activation during squatting.</strong> (a) Knee angle, (b) biological knee extension moment with commanded torque, (c) vastus medialis activation, and (d) medial gastrocnemius activation over the normalized squat cycle. Solid curves represent group means across participants, and shaded regions represent &plusmn;1 standard deviation. Blue and brown indicate squatting without (No Exo) and with (Exo) the exoskeleton, respectively, and the dashed gray curve indicates the commanded torque with the exoskeleton. Muscle activation is expressed as a percentage of each participant's maximum voluntary contraction (%MVC).</figcaption>
-          </figure>
+    <!-- Results + experiment video and live plot -->
+    <div class="columns is-desktop panel-group">
+      <div class="column is-8-desktop">
+        <section class="section main-block is-light">
+          <div>
+            <h2 class="title is-3 has-text-centered">Results</h2>
+              <figure class="paper-figure">
+                <img src="static/images/fig4_squat_profiles.png" alt="Group-averaged knee kinematics, kinetics, and muscle activation during squatting" loading="lazy">
+                <figcaption><strong>Figure 4. Group-averaged knee kinematics, kinetics, and muscle activation during squatting.</strong> (a) Knee angle, (b) biological knee extension moment with commanded torque, (c) vastus medialis activation, and (d) medial gastrocnemius activation over the normalized squat cycle. Solid curves represent group means across participants, and shaded regions represent &plusmn;1 standard deviation. Blue and brown indicate squatting without (No Exo) and with (Exo) the exoskeleton, respectively, and the dashed gray curve indicates the commanded torque with the exoskeleton. Muscle activation is expressed as a percentage of each participant's maximum voluntary contraction (%MVC).</figcaption>
+              </figure>
 
-          <figure class="paper-figure is-narrow">
-            <img src="static/images/fig5_peak_values.png" alt="Peak biological knee extension moment and muscle activation with and without the exoskeleton" loading="lazy">
-            <figcaption><strong>Figure 5. Peak biological knee extension moment and muscle activation with and without the exoskeleton.</strong> (a) Peak biological knee extension moment, (b) peak vastus medialis activation, and (c) peak medial gastrocnemius activation without (No Exo) and with (Exo) the exoskeleton. Bars represent group means, and error bars represent &plusmn;1 standard deviation across participants. Asterisks indicate a significant difference between conditions (<em>p</em>&lt;0.05, paired <em>t</em>-test).</figcaption>
-          </figure>
+              <figure class="paper-figure is-narrow">
+                <img src="static/images/fig5_peak_values.png" alt="Peak biological knee extension moment and muscle activation with and without the exoskeleton" loading="lazy">
+                <figcaption><strong>Figure 5. Peak biological knee extension moment and muscle activation with and without the exoskeleton.</strong> (a) Peak biological knee extension moment, (b) peak vastus medialis activation, and (c) peak medial gastrocnemius activation without (No Exo) and with (Exo) the exoskeleton. Bars represent group means, and error bars represent &plusmn;1 standard deviation across participants. Asterisks indicate a significant difference between conditions (<em>p</em>&lt;0.05, paired <em>t</em>-test).</figcaption>
+              </figure>
 
-          <div class="paper-table">
-            <p class="table-title"><strong>Table II.</strong> Comparison with Existing Knee Exoskeleton Platforms</p>
-            <div class="table-container">
-              <table class="table is-fullwidth is-narrow is-hoverable">
-                <thead>
-                  <tr><th>Device</th><th>Validation Subjects</th><th class="has-text-centered">Device Mass (kg)</th><th class="has-text-centered">Peak Torque (Nm)</th><th>Tasks</th><th>Reported Reduction</th></tr>
-                </thead>
-                <tbody>
-                  <tr class="is-selected-row"><td><strong>This Study</strong></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">18</td><td>Squatting</td><td>26.7% vastus medialis activation</td></tr>
-                  <tr><td><a href="https://doi.org/10.1109/LRA.2022.3145580" target="_blank">Nesler et al.</a></td><td>1 able-bodied</td><td class="has-text-centered">1.6<sup>a</sup></td><td class="has-text-centered">30</td><td>Lifting and lowering</td><td>78.9% vastus medialis activation</td></tr>
-                  <tr><td><a href="https://doi.org/10.1126/sciadv.adq0288" target="_blank">Lee et al.</a></td><td>10 able-bodied</td><td class="has-text-centered">4.4</td><td class="has-text-centered">15</td><td>Level walking, ramps, and stairs</td><td>6.2% metabolic cost<sup>c</sup></td></tr>
-                  <tr><td><a href="https://doi.org/10.34133/cbsystems.0576" target="_blank">Zhang et al.</a></td><td>6 able-bodied</td><td class="has-text-centered">3.2</td><td class="has-text-centered">18</td><td>Level walking, ramp and stair ascent</td><td>4.3&ndash;12.0% metabolic cost</td></tr>
-                  <tr><td><a href="https://doi.org/10.1109/LRA.2025.3551543" target="_blank">Boon et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">2.6<sup>a</sup></td><td class="has-text-centered">55</td><td>Stair ascent</td><td>26% vastus medialis activation</td></tr>
-                  <tr><td><a href="https://doi.org/10.1109/TMECH.2021.3081367" target="_blank">Chen et al.</a></td><td>2 able-bodied</td><td class="has-text-centered">4.1</td><td class="has-text-centered">35</td><td>Kneeling</td><td>18.4% vastus medialis activation<sup>b,c</sup></td></tr>
-                  <tr><td><a href="https://doi.org/10.1109/TRO.2022.3170287" target="_blank">Huang et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">14</td><td>Level walking</td><td>19.6% vastus medialis activation<sup>c</sup></td></tr>
-                  <tr><td><a href="https://doi.org/10.1109/ICORR55369.2022.9896571" target="_blank">Sarkisian et al.</a></td><td>1 post-stroke</td><td class="has-text-centered">3.6<sup>a</sup></td><td class="has-text-centered">40</td><td>Sit-to-stand</td><td>29.3% vastus medialis activation</td></tr>
-                  <tr><td><a href="https://doi.org/10.1007/s10439-025-03696-0" target="_blank">Yu et al.</a></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">54</td><td>Squatting</td><td>38.1% vastus medialis activation,<br>12.8% metabolic cost</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="table-note">Mass is for a bilateral device unless noted. Activation reductions are in peak values and relative to no exoskeleton unless noted. <sup>a</sup>Unilateral device. <sup>b</sup>Mean rather than peak activation. <sup>c</sup>Relative to the unpowered or zero-torque exoskeleton.</p>
+              <div class="paper-table">
+                <p class="table-title"><strong>Table II.</strong> Comparison with Existing Knee Exoskeleton Platforms</p>
+                <div class="table-container">
+                  <table class="table is-fullwidth is-narrow is-hoverable">
+                    <thead>
+                      <tr><th>Device</th><th>Validation Subjects</th><th class="has-text-centered">Device Mass (kg)</th><th class="has-text-centered">Peak Torque (Nm)</th><th>Tasks</th><th>Reported Reduction</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr class="is-selected-row"><td><strong>This Study</strong></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">18</td><td>Squatting</td><td>26.7% vastus medialis activation</td></tr>
+                      <tr><td><a href="https://doi.org/10.1109/LRA.2022.3145580" target="_blank">Nesler et al.</a></td><td>1 able-bodied</td><td class="has-text-centered">1.6<sup>a</sup></td><td class="has-text-centered">30</td><td>Lifting and lowering</td><td>78.9% vastus medialis activation</td></tr>
+                      <tr><td><a href="https://doi.org/10.1126/sciadv.adq0288" target="_blank">Lee et al.</a></td><td>10 able-bodied</td><td class="has-text-centered">4.4</td><td class="has-text-centered">15</td><td>Level walking, ramps, and stairs</td><td>6.2% metabolic cost<sup>c</sup></td></tr>
+                      <tr><td><a href="https://doi.org/10.34133/cbsystems.0576" target="_blank">Zhang et al.</a></td><td>6 able-bodied</td><td class="has-text-centered">3.2</td><td class="has-text-centered">18</td><td>Level walking, ramp and stair ascent</td><td>4.3&ndash;12.0% metabolic cost</td></tr>
+                      <tr><td><a href="https://doi.org/10.1109/LRA.2025.3551543" target="_blank">Boon et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">2.6<sup>a</sup></td><td class="has-text-centered">55</td><td>Stair ascent</td><td>26% vastus medialis activation</td></tr>
+                      <tr><td><a href="https://doi.org/10.1109/TMECH.2021.3081367" target="_blank">Chen et al.</a></td><td>2 able-bodied</td><td class="has-text-centered">4.1</td><td class="has-text-centered">35</td><td>Kneeling</td><td>18.4% vastus medialis activation<sup>b,c</sup></td></tr>
+                      <tr><td><a href="https://doi.org/10.1109/TRO.2022.3170287" target="_blank">Huang et al.</a></td><td>8 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">14</td><td>Level walking</td><td>19.6% vastus medialis activation<sup>c</sup></td></tr>
+                      <tr><td><a href="https://doi.org/10.1109/ICORR55369.2022.9896571" target="_blank">Sarkisian et al.</a></td><td>1 post-stroke</td><td class="has-text-centered">3.6<sup>a</sup></td><td class="has-text-centered">40</td><td>Sit-to-stand</td><td>29.3% vastus medialis activation</td></tr>
+                      <tr><td><a href="https://doi.org/10.1007/s10439-025-03696-0" target="_blank">Yu et al.</a></td><td>7 able-bodied</td><td class="has-text-centered">3.5</td><td class="has-text-centered">54</td><td>Squatting</td><td>38.1% vastus medialis activation,<br>12.8% metabolic cost</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="table-note">Mass is for a bilateral device unless noted. Activation reductions are in peak values and relative to no exoskeleton unless noted. <sup>a</sup>Unilateral device. <sup>b</sup>Mean rather than peak activation. <sup>c</sup>Relative to the unpowered or zero-torque exoskeleton.</p>
+              </div>
           </div>
+        </section>
       </div>
-    </section>
+      <aside class="column is-4-desktop side-column">
+        <div class="side-panel">
+          <h3 class="title is-5 has-text-centered">Squatting with the Exoskeleton</h3>
+          <!-- TODO: swap the MP4 for the YouTube upload (use the YouTube IFrame API's getCurrentTime() to keep the plot in sync) -->
+          <div class="viewer-wrap">
+            <video id="trial-video" class="trial-video" src="static/videos/results_trial.mp4?v=1"
+                   data-motion="static/data/results_data.json?v=1"
+                   autoplay muted loop playsinline preload="auto"
+                   aria-label="Participant squatting with the knee exoskeleton"></video>
+            <div class="viewer-controls">
+              <button type="button" class="viewer-btn js-video-toggle" title="Pause video" aria-label="Pause video">
+                <span class="icon-pause"><i class="fas fa-pause"></i></span>
+                <span class="icon-play is-hidden"><i class="fas fa-play"></i></span>
+              </button>
+            </div>
+          </div>
+          <div class="tabs is-small is-toggle is-centered plot-tabs">
+            <ul role="tablist">
+              <li class="is-active"><a href="#" role="tab" aria-selected="true" data-plot="angle">Knee angle</a></li>
+              <li><a href="#" role="tab" aria-selected="false" data-plot="torque">Torque</a></li>
+            </ul>
+          </div>
+          <div class="motion-plot">
+            <p class="plot-title">Right knee angle (deg, flexion &minus;)</p>
+            <div class="plot-legend is-hidden">
+              <span><i class="swatch" style="--swatch: #2a78d6"></i>Biological moment</span>
+              <span><i class="swatch is-dashed" style="--swatch: #eb6834"></i>Exo torque</span>
+            </div>
+            <canvas id="trial-plot" class="is-compact" role="img" aria-label="Right knee data drawn in sync with the video"></canvas>
+            <p class="plot-readout" aria-live="off"></p>
+          </div>
+          <p class="side-note">Exo-on squat trial &middot; right knee data synced to the video</p>
+        </div>
+      </aside>
+    </div>
+    <!-- End results group -->
 
     <!-- End paper figures and tables -->
 
