@@ -11,7 +11,7 @@ of bone meshes (.vtp), and writes a GLB with:
 Example:
   python3 tools/build_squat_model.py \
       --hfd H0709v2j.hfd --sto episode_10_895.335.sto \
-      --geometry path/to/Geometry --mirror \
+      --geometry path/to/geometry --mirror --start 2.09 --end 9.06 \
       --out static/models/squat_model.glb
 
 Requires: numpy, trimesh, pygltflib
@@ -202,14 +202,26 @@ def main():
     ap.add_argument("--geometry", required=True, help="folder with .vtp bone meshes")
     ap.add_argument("--out", required=True)
     ap.add_argument("--mirror", action="store_true", help="add a mirrored left leg")
+    ap.add_argument("--start", type=float, default=None, help="clip start time (s)")
+    ap.add_argument("--end", type=float, default=None, help="clip end time (s)")
     args = ap.parse_args()
 
     model = one(parse_zml(open(args.hfd).read()), "model")
     bodies = [b for b in model["body"] if one(b, "name") != "ground"]
     muscles = model.get("point_path_muscle", [])
     header, data = read_sto(args.sto)
-    data = data[::FRAME_STEP]
     col = {h: i for i, h in enumerate(header)}
+    t_all = data[:, col["time"]]
+    keep = np.ones(len(data), bool)
+    if args.start is not None:
+        keep &= t_all >= args.start - 1e-9
+    if args.end is not None:
+        keep &= t_all <= args.end + 1e-9
+    data = data[keep]
+    rows = list(range(0, len(data), FRAME_STEP))
+    if rows[-1] != len(data) - 1:
+        rows.append(len(data) - 1)  # always end exactly on the clip's last frame
+    data = data[rows]
     times = (data[:, col["time"]] - data[0, col["time"]]).astype(np.float32)
 
     # Per-body world transforms (pos + quaternion w,x,y,z) for every frame.
