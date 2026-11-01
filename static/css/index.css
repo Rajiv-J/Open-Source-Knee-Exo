@@ -135,3 +135,81 @@ body {
 
 
 
+
+/* ---------- Paper figures and tables ---------- */
+.paper-figure {
+  margin: 2rem auto;
+}
+
+.paper-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+
+.paper-figure figcaption,
+.paper-table .table-title,
+.paper-table .table-note {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.paper-figure figcaption {
+  margin-top: 0.75rem;
+}
+
+.paper-table {
+  margin: 2rem auto;
+}
+
+.paper-table .table-title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.paper-table .table {
+  font-size: 0.9rem;
+}
+
+.paper-table .table-group th {
+  text-align: center;
+  background: #f0f0f0;
+}
+
+.paper-table .is-selected-row td {
+  background: #fff8e6;
+}
+
+.paper-table .table-note {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.paper-table.is-compact {
+  max-width: 560px;
+}
+
+/* Single-column paper figures: keep them at a readable size */
+.paper-figure.is-narrow {
+  max-width: 640px;
+}
+
+.paper-table a {
+  color: hsl(204, 86%, 53%);
+}
+
+.paper-table sup {
+  line-height: 0;
+}
+
+/* Keep wide tables scrolling inside the page on small screens */
+.hero > .container {
+  width: 100%;
+}
+
+/* Wide tables scroll sideways on phones instead of squashing */
+.paper-table:not(.is-compact) .table {
+  min-width: 760px;
+}
