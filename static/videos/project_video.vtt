@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:04.495
+Every time you rise from a squat, your knees carry most of the load.
+
+00:00:04.495 --> 00:00:11.016
+Exoskeletons are wearable robots that can share it, adding torque at the joint right when your muscles need it.
+
+00:00:12.333 --> 00:00:15.661
+The most advanced ones don't replay a fixed pattern.
+
+00:00:15.661 --> 00:00:22.189
+They estimate your own effort, moment by moment, from sensors on the device, and assist in proportion.
+
+00:00:22.189 --> 00:00:27.693
+This approach, called biological torque control, has already made walking less tiring.
+
+00:00:29.000 --> 00:00:30.246
+But there's a catch.
+
+00:00:30.246 --> 00:00:40.402
+To learn your effort, the controller is trained on large amounts of data recorded with that exact device, in a lab full of motion capture cameras and force plates.
+
+00:00:40.402 --> 00:00:43.143
+Build a new exoskeleton, and you start over.
+
+00:00:44.433 --> 00:00:45.120
+So we asked:
+
+00:00:45.120 --> 00:00:48.785
+what if the controller never needed data from the device at all?
+
+00:00:50.700 --> 00:00:57.173
+First, a virtual human with muscles learns to squat, imitating real people from an open dataset.
+
+00:00:57.173 --> 00:01:00.814
+As it moves, we record how hard its knee muscles work.
+
+00:01:00.814 --> 00:01:07.490
+Then a small neural network learns to predict that effort from only what the exoskeleton can sense:
+
+00:01:07.490 --> 00:01:10.052
+its knee angle and two motion sensors.
+
+00:01:11.366 --> 00:01:16.799
+We built the exoskeleton from an off-the-shelf motor and 3D-printed carbon-fiber parts.
+
+00:01:16.799 --> 00:01:22.481
+A hundred times a second, it estimates the wearer's knee effort and supplies a share of it.
+
+00:01:23.766 --> 00:01:35.690
+In seven people squatting, it cut the knee's peak effort by twenty-one and a half percent compared with no exoskeleton, and peak activity in a main thigh muscle by about twenty-seven percent.
+
+00:01:35.690 --> 00:01:38.998
+No training data came from the device or the wearers.
+
+00:01:40.300 --> 00:01:47.085
+The hardware, code, and training pipeline are open source, so any lab can build it and train their own controller.
+
+00:01:47.085 --> 00:01:48.812
+The details are in the paper.
